@@ -1,0 +1,53 @@
+{
+  "sideDrawer": {
+    "homepage": "Homepage",
+    "settings": "Settings",
+    "contacts": "Contacts"
+  },
+  "navbar": {
+    "welcome": "Welcome to Vuegram",
+    "search": "Search",
+    "logout": "Logout"
+  },
+  "settings": {
+    "alert": "You've successfully updated your settings!",
+    "title": "Settings",
+    "subtitle": "Update your settings"
+  },
+  "dashboard": {
+    "post": "Post",
+    "showComments": "Show all comments",
+    "hideComments": "Hide all comments",
+    "addComment": "Add comment",
+    "onYourMind": "What's on your mind?",
+    "showFullPost": "Click to see complete post"
+  },
+  "contacts": {
+    "follow": "Follow",
+    "unfollow": "Unfollow"
+  },
+  "form": {
+    "name": "Name",
+    "title": "Company",
+    "updateProfile": "Update profile",
+    "imageUrl": "Profile image url",
+    "password": "Password",
+    "email": "Email"
+  },
+  "login": {
+    "loginForm": "Login form",
+    "welcome": "Welcome to the sample social media web app powered by Vue.js and Firebase. Build this project by checking out The Definitive Guide to Getting Started with Vue.js",
+    "loading": "Loading",
+    "signIn":"Sign In with Google",
+    "forgot":"Forgot Password",
+    "createAccount":"Create an account",
+    "login":"Login",
+    "signUpForm":"Signup form",
+    "backToLogin":"Back to login",
+    "signUp":"Signup",
+    "passReset":"Reset a password",
+    "passResetEmail":"We will send you an email to reset your password",
+    "submit":"Submit",
+    "loginAlert":"Unsuccessful login! Wrong password or email!"
+  }
+}
