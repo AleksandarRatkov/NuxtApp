@@ -1,7 +1,9 @@
 import colors from 'vuetify/es5/util/colors'
+const env = require('dotenv').config()
 
 export default {
   mode: 'universal',
+  env: env.parsed,
   /*
   ** Headers of the page
   */
@@ -32,12 +34,14 @@ export default {
   plugins: [
     "~/plugins/i18n.js",
     "~/plugins/vee-validate.js",
+    "~/plugins/firebase.js",
   ],
   /*
   ** Nuxt.js dev-modules
   */
   buildModules: [
     '@nuxtjs/vuetify',
+    '@nuxtjs/dotenv',
   ],
   /*
   ** Nuxt.js modules
