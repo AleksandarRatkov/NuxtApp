@@ -30,7 +30,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    "~/plugins/i18n.js"
+    "~/plugins/i18n.js",
+    "~/plugins/vee-validate.js",
   ],
   /*
   ** Nuxt.js dev-modules
@@ -42,6 +43,7 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    "nuxt-material-design-icons"
   ],
   /*
   ** vuetify module configuration
@@ -66,6 +68,7 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
-    }
+    },
+    transpile: ["vee-validate/dist/rules"],
   }
 }

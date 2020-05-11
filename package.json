@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "nuxt": "^2.0.0",
+    "nuxt-material-design-icons": "^1.0.4",
+    "vee-validate": "^3.3.0",
     "vue-i18n": "^8.17.5"
   },
   "devDependencies": {
