@@ -32,8 +32,7 @@
                                     </ValidationProvider>
                                 </v-card-text>
                                 <v-flex md4 offset-md4>
-                                    <!-- <v-card-text @click="loginWithGoogle"> -->
-                                    <v-card-text>
+                                    <v-card-text @click="loginWithGoogle">
                                         <v-avatar size="40" class="logo">
                                             <v-img src="/images/google-logo.png" alt="logoImage"></v-img>
                                         </v-avatar>
@@ -44,8 +43,7 @@
                                     <v-btn text color="primary" @click="togglePasswordReset">{{$t('login.forgot')}}</v-btn>
                                     <v-btn text color="primary" @click="toggleForm">{{$t('login.createAccount')}}</v-btn>
                                     <v-spacer />
-                                    <!-- <v-btn :disabled="invalid" class="white--text" color="primary" @click="login">{{$t('login.login')}}</v-btn> -->
-                                    <v-btn :disabled="invalid" class="white--text" color="primary">{{$t('login.login')}}</v-btn>
+                                    <v-btn :disabled="invalid" class="white--text" color="primary" @click="login">{{$t('login.login')}}</v-btn>
                                 </v-card-actions>
                             </v-form>
                         </ValidationObserver>
@@ -79,8 +77,7 @@
                                 <v-card-actions>
                                     <v-spacer />
                                     <v-btn text color="primary" @click="toggleForm">{{$t('login.backToLogin')}}</v-btn>
-                                    <!-- <v-btn :disabled="invalid" class="white--text" color="primary" @click="signup">{{$t('login.signUp')}}</v-btn> -->
-                                    <v-btn :disabled="invalid" class="white--text" color="primary">{{$t('login.signUp')}}</v-btn>
+                                    <v-btn :disabled="invalid" class="white--text" color="primary" @click="signup">{{$t('login.signUp')}}</v-btn>
                                 </v-card-actions>
                             </v-form>
                         </ValidationObserver>
@@ -108,8 +105,7 @@
                         <v-card-actions>
                             <v-spacer />
                             <v-btn text color="primary" @click="togglePasswordReset">{{$t('login.backToLogin')}}</v-btn>
-                            <!-- <v-btn class="white--text" color="primary" @click="resetPassword">{{$t('login.submit')}}</v-btn> -->
-                            <v-btn class="white--text" color="primary">{{$t('login.submit')}}</v-btn>
+                            <v-btn class="white--text" color="primary" @click="resetPassword">{{$t('login.submit')}}</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -118,7 +114,6 @@
     </v-layout>
 </v-container>
 </template>
-
 <script>
 import {
     mapMutations,
@@ -134,12 +129,11 @@ import {
     ValidationProvider,
     ValidationObserver
 } from 'vee-validate'
-// import firebase from 'firebase';
 
-// import {
-//     auth,
-//     usersCollection
-// } from '~/plugins/firebaseConfig.js'
+import {
+    auth,
+    usersCollection
+} from '~/plugins/firebase.js'
 extend('required', {
     ...required,
     message: '{_field_} can not be empty',
@@ -190,115 +184,115 @@ export default {
         };
     },
     methods: {
-        // ...mapMutations({
-        //     setCurrentUser: 'user/setCurrentUser'
-        // }),
-        // ...mapActions({
-        //     fetchUserProfile: 'user/fetchUserProfile'
-        // }),
+        ...mapMutations({
+            setCurrentUser: 'user/setCurrentUser'
+        }),
+        ...mapActions({
+            fetchUserProfile: 'user/fetchUserProfile'
+        }),
         setPerformingRequest(value) {
             this.performingRequest = value;
         },
-        // loginWithGoogle() {
-        //     this.setPerformingRequest(true);
-        //     const provider = new firebase.auth.GoogleAuthProvider();
-        //     auth.signInWithPopup(provider).then((user) => {
-        //         this.checkIfUserExist(user.user);
-        //     }).catch((err) => {
-        //         console.log(err);
-        //         this.showLoginError = true;
-        //         this.errorMsg = err.message;
-        //         this.setPerformingRequest(false);
-        //     });
-        // },
-        // login() {
-        //     this.setPerformingRequest(true);
-        //     auth
-        //         .signInWithEmailAndPassword(
-        //             this.loginForm.email,
-        //             this.loginForm.password
-        //         )
-        //         .then(user => {
-        //             this.setCurrentUser(user.user);
-        //             this.fetchUserProfile();
-        //             this.$router.push("/dashboard");
-        //             this.setPerformingRequest(false);
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //             this.showLoginError = true;
-        //             this.errorMsg = err.message;
-        //             this.setPerformingRequest(false);
-        //         });
-        // },
-        // signup() {
-        //     this.setPerformingRequest(true);
+        loginWithGoogle() {
+            this.setPerformingRequest(true);
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).then((user) => {
+                this.checkIfUserExist(user.user);
+            }).catch((err) => {
+                console.log(err);
+                this.showLoginError = true;
+                this.errorMsg = err.message;
+                this.setPerformingRequest(false);
+            });
+        },
+        login() {
+            this.setPerformingRequest(true);
+            auth
+                .signInWithEmailAndPassword(
+                    this.loginForm.email,
+                    this.loginForm.password
+                )
+                .then(user => {
+                    this.setCurrentUser(user.user);
+                    this.fetchUserProfile();
+                    this.$router.push("/");
+                    this.setPerformingRequest(false);
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.showLoginError = true;
+                    this.errorMsg = err.message;
+                    this.setPerformingRequest(false);
+                });
+        },
+        signup() {
+            this.setPerformingRequest(true);
 
-        //     auth
-        //         .createUserWithEmailAndPassword(
-        //             this.signupForm.email,
-        //             this.signupForm.password
-        //         )
-        //         .then(user => {
-        //             this.addUserToDb(user.user, this.signupForm.name, this.signupForm.title)
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //             this.showSignUpError = true;
-        //             this.errorMsg = err.message;
-        //             this.setPerformingRequest(false);
-        //         });
-        // },
-        // addUserToDb(user, name, title) {
-        //     this.setCurrentUser(user);
-        //     usersCollection
-        //         .doc(user.uid)
-        //         .set({
-        //             name: name,
-        //             title: title,
-        //             following: []
-        //         })
-        //         .then(() => {
-        //             this.afterSuccessfulLogin();
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //             this.errorMsg = err.message;
-        //         });
-        // },
-        // afterSuccessfulLogin() {
-        //     this.fetchUserProfile();
-        //     this.$router.push("/dashboard");
-        //     this.setPerformingRequest(false);
-        // },
-        // checkIfUserExist(user) {
-        //     usersCollection.doc(user.uid).get().then(res => {
-        //         if (!res.exists) {
-        //             this.addUserToDb(user, user.displayName, '');
-        //         } else {
-        //             this.afterSuccessfulLogin();
-        //         }
-        //     }).catch(err => {
-        //         console.log(err)
-        //     })
-        // },
-        // resetPassword() {
-        //     this.performingRequest = true;
+            auth
+                .createUserWithEmailAndPassword(
+                    this.signupForm.email,
+                    this.signupForm.password
+                )
+                .then(user => {
+                    this.addUserToDb(user.user, this.signupForm.name, this.signupForm.title)
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.showSignUpError = true;
+                    this.errorMsg = err.message;
+                    this.setPerformingRequest(false);
+                });
+        },
+        addUserToDb(user, name, title) {
+            this.setCurrentUser(user);
+            usersCollection
+                .doc(user.uid)
+                .set({
+                    name: name,
+                    title: title,
+                    following: []
+                })
+                .then(() => {
+                    this.afterSuccessfulLogin();
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.errorMsg = err.message;
+                });
+        },
+        afterSuccessfulLogin() {
+            this.fetchUserProfile();
+            this.$router.push("/");
+            this.setPerformingRequest(false);
+        },
+        checkIfUserExist(user) {
+            usersCollection.doc(user.uid).get().then(res => {
+                if (!res.exists) {
+                    this.addUserToDb(user, user.displayName, '');
+                } else {
+                    this.afterSuccessfulLogin();
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+        resetPassword() {
+            this.performingRequest = true;
 
-        //     auth
-        //         .sendPasswordResetEmail(this.passwordForm.email)
-        //         .then(() => {
-        //             this.performingRequest = false;
-        //             this.passwordResetSuccess = true;
-        //             this.passwordForm.email = "";
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //             this.showPasswordError = true;
-        //             this.performingRequest = false;
-        //             this.errorMsg = err.message;
-        //         });
-        // },
+            auth
+                .sendPasswordResetEmail(this.passwordForm.email)
+                .then(() => {
+                    this.performingRequest = false;
+                    this.passwordResetSuccess = true;
+                    this.passwordForm.email = "";
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.showPasswordError = true;
+                    this.performingRequest = false;
+                    this.errorMsg = err.message;
+                });
+        },
         togglePasswordReset() {
             if (this.showForgotPassword) {
                 this.showLoginForm = true;
