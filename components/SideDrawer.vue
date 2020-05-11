@@ -45,7 +45,9 @@ export default {
         }
     },
     computed: {
-        ...mapState(['drawer'])
+        ...mapState({
+            drawer: state => state.drawer
+        })
     },
 }
 </script>

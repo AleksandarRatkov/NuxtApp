@@ -8,8 +8,8 @@
     <v-spacer />
     <v-badge bordered bottom color="green accent-4" dot offset-x="10" offset-y="10">
         <v-avatar left size="40">
-            <!-- <v-img v-if="userProfile.profileImageUrl" :src="userProfile.profileImageUrl" alt="logoImage"></v-img>
-            <v-icon v-if="!userProfile.profileImageUrl" large>mdi-account-circle</v-icon> -->
+            <!-- <v-img v-if="userProfile.profileImageUrl" :src="userProfile.profileImageUrl" alt="logoImage"></v-img> -->
+            <v-icon large>mdi-account-circle</v-icon> 
         </v-avatar>
     </v-badge>
 
@@ -31,7 +31,7 @@
 <script>
 import {
     mapState,
-    // mapMutations,
+    mapMutations,
     // mapActions
 } from 'vuex'
 
@@ -60,8 +60,10 @@ export default {
             drawer: state => state.drawer
         }),
     },
-    // methods: {
-    //     ...mapMutations(['setDrawer']),
+    methods: {
+        ...mapMutations({
+            setDrawer: 'setDrawer'
+            }),
     //     ...mapActions(['clearData']),
     //     logout() {
     //         auth.signOut()
@@ -73,7 +75,7 @@ export default {
     //                 console.log(err);
     //             });
     //     }
-    // },
+    },
 }
 </script>
 
