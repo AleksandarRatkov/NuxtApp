@@ -29,7 +29,7 @@ export default {
             items: [{
                     icon: 'mdi-view-dashboard',
                     text: 'sideDrawer.homepage',
-                    route: '/dashboard'
+                    route: '/'
                 },
                 {
                     icon: 'mdi-contacts',
