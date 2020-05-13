@@ -8,15 +8,14 @@
     <v-spacer />
     <v-badge bordered bottom color="green accent-4" dot offset-x="10" offset-y="10">
         <v-avatar left size="40">
-            <!-- <v-img v-if="userProfile.profileImageUrl" :src="userProfile.profileImageUrl" alt="logoImage"></v-img> -->
-            <v-icon large>mdi-account-circle</v-icon> 
+            <v-img v-if="userProfile.profileImageUrl" :src="userProfile.profileImageUrl" alt="logoImage"></v-img>
+            <v-icon v-if="!userProfile.profileImageUrl" large>mdi-account-circle</v-icon>
         </v-avatar>
     </v-badge>
 
     <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-            <!-- <v-btn right text v-on="on" @click="logout"> -->
-            <v-btn right text v-on="on">
+            <v-btn right text v-on="on" @click="logout">
                 <v-icon>mdi-logout</v-icon>
             </v-btn>
         </template>
@@ -32,12 +31,12 @@
 import {
     mapState,
     mapMutations,
-    // mapActions
+    mapActions
 } from 'vuex'
 
-// import {
-//     auth
-// } from '~/plugins/firebaseConfig.js'
+import {
+    auth
+} from '~/plugins/firebase.js'
 
 export default {
     name: 'Navbar',
@@ -56,25 +55,27 @@ export default {
     },
     computed: {
         ...mapState({
-            // userProfile: state => state.user.userProfile,
+            userProfile: state => state.user.userProfile,
             drawer: state => state.drawer
         }),
     },
     methods: {
         ...mapMutations({
             setDrawer: 'setDrawer'
-            }),
-    //     ...mapActions(['clearData']),
-    //     logout() {
-    //         auth.signOut()
-    //             .then(() => {
-    //                 this.clearData();
-    //                 this.$router.push("/login");
-    //             })
-    //             .catch(err => {
-    //                 console.log(err);
-    //             });
-    //     }
+        }),
+        ...mapActions(['clearData']),
+        logout() {
+            auth.signOut()
+                .then(() => {
+                    this.clearData();
+                    this.$router.push({
+                       path: "/login"
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     },
 }
 </script>
