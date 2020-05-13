@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "firebase": "^7.14.3",
+    "is-image-url": "^1.1.8",
+    "lodash": "^4.17.15",
+    "moment": "^2.25.3",
     "nuxt": "^2.0.0",
     "nuxt-material-design-icons": "^1.0.4",
     "vee-validate": "^3.3.0",
