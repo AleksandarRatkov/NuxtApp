@@ -13,6 +13,7 @@ import Navbar from '@/components/Navbar';
 import SideDrawer from '@/components/SideDrawer';
 
 export default {
+  name: 'Default',
   components: {
         Navbar,
         SideDrawer
