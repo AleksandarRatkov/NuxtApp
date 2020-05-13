@@ -1,5 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
 const env = require('dotenv').config()
+import webpack from 'webpack'
 
 export default {
   mode: 'universal',
@@ -72,7 +73,17 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
     },
     transpile: ["vee-validate/dist/rules"],
+    plugins: [
+      new webpack.ProvidePlugin({
+        // global modules
+        'moment': 'moment',
+        '_': 'lodash'
+      })
+    ]
   }
 }
