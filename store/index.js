@@ -9,10 +9,11 @@ export const mutations = {
 }
 
 
-// export const actions = {
-//     clearData({ commit }) {
-//         commit('user/setCurrentUser', null)
-//         commit('user/setUserProfile', {})
-//         commit('post/setPosts', [])
-//     }
-// }
+export const actions = {
+    clearData({ commit }) {
+        // commit('user/setCurrentUser', null)
+        commit('user/setCurrentUserId', null)
+        commit('user/setUserProfile', {})
+        commit('post/setPosts', [])
+    }
+}
