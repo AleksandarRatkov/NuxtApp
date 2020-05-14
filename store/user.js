@@ -1,4 +1,4 @@
-import _ from 'lodash';
+// import _ from 'lodash';
 import {
     usersCollection,
     postsCollection,
@@ -6,21 +6,21 @@ import {
 } from '~/plugins/firebase.js'
 
 export const state = () => ({
-    currentUser: null,
     userProfile: {},
-    users: []
+    users: [],
+    currentUserId: null
 })
 
 export const mutations = {
-    setCurrentUser(state, val) {
-        state.currentUser = val
-    },
     setUserProfile(state, val) {
         state.userProfile = val
     },
     setUsers(state, val) {
         state.users = val
-    }
+    },
+    setCurrentUserId(state, val) {
+        state.currentUserId = val
+    },
 }
 
 
@@ -31,7 +31,7 @@ export const actions = {
                 return { id: doc.id, ...doc.data() }
             })
             _.remove(fetchedUsers, function (user) {
-                return user.id === state.currentUser.uid;
+                return user.id === state.currentUserId;
             });
             commit('setUsers', fetchedUsers)
         }).catch(err => {
@@ -39,7 +39,7 @@ export const actions = {
         })
     },
     fetchUserProfile({ commit, state }) {
-        usersCollection.doc(state.currentUser.uid).get().then(res => {
+        usersCollection.doc(state.currentUserId).get().then(res => {
             let user = res.data();
             user.id = res.id;
             commit('setUserProfile', user)
@@ -52,9 +52,9 @@ export const actions = {
         let title = data.title
         let profileImageUrl = data.profileImageUrl
 
-        usersCollection.doc(state.currentUser.uid).update({ name, title, profileImageUrl }).then(() => {
+        usersCollection.doc(state.currentUserId).update({ name, title, profileImageUrl }).then(() => {
             // update all posts by user to reflect new name
-            fb.postsCollection.where('userId', '==', state.currentUser.uid).get().then(docs => {
+            postsCollection.where('userId', '==', state.currentUserId).get().then(docs => {
                 docs.forEach(doc => {
                     postsCollection.doc(doc.id).update({
                         userName: name,
@@ -63,7 +63,7 @@ export const actions = {
                 })
             })
             // update all comments by user to reflect new name
-            commentsCollection.where('userId', '==', state.currentUser.uid).get().then(docs => {
+            commentsCollection.where('userId', '==', state.currentUserId).get().then(docs => {
                 docs.forEach(doc => {
                     commentsCollection.doc(doc.id).update({
                         userName: name,
@@ -78,6 +78,6 @@ export const actions = {
     updateProfileFollowing({ state }, data) {
         let following = data.following
 
-        usersCollection.doc(state.currentUser.uid).update({ following });
+        usersCollection.doc(state.currentUserId).update({ following });
     }
 }
