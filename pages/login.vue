@@ -114,6 +114,7 @@
     </v-layout>
 </v-container>
 </template>
+
 <script>
 import {
     mapMutations,
@@ -134,6 +135,8 @@ import {
     auth,
     usersCollection
 } from '~/plugins/firebase.js'
+import firebase from 'firebase';
+
 extend('required', {
     ...required,
     message: '{_field_} can not be empty',
@@ -156,7 +159,7 @@ export default {
         ValidationProvider,
         ValidationObserver
     },
-    data() {
+    asyncData() {
         return {
             loginForm: {
                 email: "",
@@ -185,13 +188,38 @@ export default {
     },
     methods: {
         ...mapMutations({
-            setCurrentUser: 'user/setCurrentUser'
+            setCurrentUserId: 'user/setCurrentUserId',
         }),
         ...mapActions({
             fetchUserProfile: 'user/fetchUserProfile'
         }),
         setPerformingRequest(value) {
             this.performingRequest = value;
+        },
+        login() {
+            this.setPerformingRequest(true);
+            auth
+                .signInWithEmailAndPassword(
+                    this.loginForm.email,
+                    this.loginForm.password
+                )
+                .then(user => {
+                    this.setCurrentUserId(user.user.uid);
+                    this.afterSuccessfulLogin();
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.showLoginError = true;
+                    this.errorMsg = err.message;
+                    this.setPerformingRequest(false);
+                });
+        },
+        afterSuccessfulLogin() {
+            this.fetchUserProfile();
+            this.$router.push({
+                path: "/"
+            });
+            this.setPerformingRequest(false);
         },
         loginWithGoogle() {
             this.setPerformingRequest(true);
@@ -205,25 +233,16 @@ export default {
                 this.setPerformingRequest(false);
             });
         },
-        login() {
-            this.setPerformingRequest(true);
-            auth
-                .signInWithEmailAndPassword(
-                    this.loginForm.email,
-                    this.loginForm.password
-                )
-                .then(user => {
-                    this.setCurrentUser(user.user);
-                    this.fetchUserProfile();
-                    this.$router.push("/");
-                    this.setPerformingRequest(false);
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.showLoginError = true;
-                    this.errorMsg = err.message;
-                    this.setPerformingRequest(false);
-                });
+         checkIfUserExist(user) {
+            usersCollection.doc(user.uid).get().then(res => {
+                if (!res.exists) {
+                    this.addUserToDb(user, user.displayName, '');
+                } else {
+                    this.afterSuccessfulLogin();
+                }
+            }).catch(err => {
+                console.log(err)
+            })
         },
         signup() {
             this.setPerformingRequest(true);
@@ -244,9 +263,10 @@ export default {
                 });
         },
         addUserToDb(user, name, title) {
-            this.setCurrentUser(user);
+            let userId = user.uid;
+            this.setCurrentUserId(userId);
             usersCollection
-                .doc(user.uid)
+                .doc(userId)
                 .set({
                     name: name,
                     title: title,
@@ -259,22 +279,6 @@ export default {
                     console.log(err);
                     this.errorMsg = err.message;
                 });
-        },
-        afterSuccessfulLogin() {
-            this.fetchUserProfile();
-            this.$router.push("/");
-            this.setPerformingRequest(false);
-        },
-        checkIfUserExist(user) {
-            usersCollection.doc(user.uid).get().then(res => {
-                if (!res.exists) {
-                    this.addUserToDb(user, user.displayName, '');
-                } else {
-                    this.afterSuccessfulLogin();
-                }
-            }).catch(err => {
-                console.log(err)
-            })
         },
         resetPassword() {
             this.performingRequest = true;
@@ -327,7 +331,6 @@ $white: #fff;
 }
 
 .background {
-    // background: linear-gradient(to right, $primary 0%, $primary 50%, $white 50%, $white 100%);
     background-image: url('/images/background.webp');
     background-size: 50vw 100vh;
     padding-left: 20vh;
