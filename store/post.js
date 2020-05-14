@@ -1,4 +1,4 @@
-import _ from 'lodash';
+// import _ from 'lodash';
 import {
     postsCollection
 } from '~/plugins/firebase.js'
@@ -19,7 +19,7 @@ export const mutations = {
 
 
 export const actions = {
-    fetchAllPosts({ commit }) {
+    fetchAllPosts({ commit, rootState }) {
         postsCollection.orderBy('createdOn', 'desc').onSnapshot(querySnapshot => {
             let postsArray = []
 
@@ -28,7 +28,7 @@ export const actions = {
                 post.id = doc.id;
                 postsArray.push(post)
             })
-            let userProfile = this.state.user.userProfile;
+            let userProfile = _.cloneDeep(rootState.user.userProfile);
             let ids = userProfile.following;
             ids.push(userProfile.id);
 
