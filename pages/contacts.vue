@@ -32,6 +32,9 @@ import _ from 'lodash';
 
 export default {
     name: "Contacts",
+    meta: {
+        requiresAuth: true
+    },
     created() {
         this.getOtherUsers();
     },

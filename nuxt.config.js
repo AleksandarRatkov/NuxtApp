@@ -5,6 +5,9 @@ import webpack from 'webpack'
 export default {
   mode: 'universal',
   env: env.parsed,
+  router: {
+    middleware:'auth'
+  },
   /*
   ** Headers of the page
   */

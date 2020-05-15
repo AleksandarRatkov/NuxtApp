@@ -69,6 +69,9 @@ extend('validateImageUrl', {
 
 export default {
     name: 'Settings',
+    meta: {
+        requiresAuth: true
+    },
     components: {
         ValidationProvider,
         ValidationObserver
