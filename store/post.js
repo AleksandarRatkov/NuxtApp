@@ -19,7 +19,7 @@ export const mutations = {
 
 export const actions = {
     fetchAllPosts({ commit, rootState }) {
-        var unsubscribe = postsCollection.orderBy('createdOn', 'desc').onSnapshot(querySnapshot => {
+        postsCollection.orderBy('createdOn', 'desc').onSnapshot(querySnapshot => {
             let postsArray = []
 
             querySnapshot.forEach(doc => {
@@ -36,6 +36,5 @@ export const actions = {
             })
             commit('setPosts', postsArray)
         })
-        // unsubscribe();
     }
 }
