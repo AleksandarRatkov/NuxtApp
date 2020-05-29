@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "cookieparser": "^0.1.0",
-    "firebase": "^7.14.3",
+    "firebase": "7.14.1",
     "is-image-url": "^1.1.8",
     "js-cookie": "^2.2.1",
     "jwt-decode": "^2.2.0",

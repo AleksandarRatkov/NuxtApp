@@ -1,4 +1,3 @@
-// import _ from 'lodash';
 import {
     postsCollection
 } from '~/plugins/firebase.js'
@@ -20,7 +19,7 @@ export const mutations = {
 
 export const actions = {
     fetchAllPosts({ commit, rootState }) {
-        postsCollection.orderBy('createdOn', 'desc').onSnapshot(querySnapshot => {
+        var unsubscribe = postsCollection.orderBy('createdOn', 'desc').onSnapshot(querySnapshot => {
             let postsArray = []
 
             querySnapshot.forEach(doc => {
@@ -37,5 +36,6 @@ export const actions = {
             })
             commit('setPosts', postsArray)
         })
+        // unsubscribe();
     }
 }

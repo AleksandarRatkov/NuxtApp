@@ -290,7 +290,6 @@ import { required, email, min } from "vee-validate/dist/rules";
 import { extend, ValidationProvider, ValidationObserver } from "vee-validate";
 
 import { auth, usersCollection } from "~/plugins/firebase.js";
-import firebase from "firebase";
 
 extend("required", {
   ...required,
@@ -346,120 +345,61 @@ export default {
       setCurrentUserId: "user/setCurrentUserId"
     }),
     ...mapActions({
-      fetchUserProfile: "user/fetchUserProfile"
+      fetchUserProfile: "user/fetchUserProfile",
+      loginUser: "user/login",
+      loginUserWithGoogle: "user/loginWithGoogle",
+      signUpUser: "user/signup",
+      resetUserPassword: "user/resetPassword"
     }),
     setPerformingRequest(value) {
       this.performingRequest = value;
     },
-    login() {
+    async login() {
       this.setPerformingRequest(true);
-      auth
-        .signInWithEmailAndPassword(
-          this.loginForm.email,
-          this.loginForm.password
-        )
-        .then(user => {
-          this.setCurrentUserId(user.user.uid);
-          this.afterSuccessfulLogin();
-        })
-        .catch(err => {
-          console.log(err);
-          this.showLoginError = true;
-          this.errorMsg = err.message;
-          this.setPerformingRequest(false);
-        });
+      try {
+        await this.loginUser(this.loginForm);
+        this.afterSuccessfulAuth();
+      } catch (error) {
+        this.showErrorMessage(error, this.showLoginForm);
+      }
     },
-    afterSuccessfulLogin() {
-      this.fetchUserProfile();
-      this.$router.push({
-        path: "/"
-      });
+    showErrorMessage(error, form) {
+      console.log(error);
+      form = true;
+      this.errorMsg = error.message;
       this.setPerformingRequest(false);
     },
-    loginWithGoogle() {
+    afterSuccessfulAuth() {
+      this.$router.push({ path: "/" });
+      this.setPerformingRequest(false);
+    },
+    async loginWithGoogle() {
+      try {
+        await this.loginUserWithGoogle();
+        this.afterSuccessfulAuth();
+      } catch (error) {
+        this.showErrorMessage(error, this.showLoginForm);
+      }
+    },
+    async signup() {
       this.setPerformingRequest(true);
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth
-        .signInWithPopup(provider)
-        .then(user => {
-          this.checkIfUserExist(user.user);
-        })
-        .catch(err => {
-          console.log(err);
-          this.showLoginError = true;
-          this.errorMsg = err.message;
-          this.setPerformingRequest(false);
-        });
+      try {
+        await this.signUpUser(this.signupForm);
+        this.afterSuccessfulAuth();
+      } catch (error) {
+        this.showErrorMessage(error, this.showSignUpError);
+      }
     },
-    checkIfUserExist(user) {
-      usersCollection
-        .doc(user.uid)
-        .get()
-        .then(res => {
-          if (!res.exists) {
-            this.addUserToDb(user.uid, user.displayName, "");
-          } else {
-            this.afterSuccessfulLogin();
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    signup() {
-      this.setPerformingRequest(true);
-      auth
-        .createUserWithEmailAndPassword(
-          this.signupForm.email,
-          this.signupForm.password
-        )
-        .then(user => {
-          this.addUserToDb(
-            user.user.uid,
-            this.signupForm.name,
-            this.signupForm.title
-          );
-        })
-        .catch(err => {
-          console.log(err);
-          this.showSignUpError = true;
-          this.errorMsg = err.message;
-          this.setPerformingRequest(false);
-        });
-    },
-    addUserToDb(userId, name, title) {
-      this.setCurrentUserId(userId);
-      usersCollection
-        .doc(userId)
-        .set({
-          name: name,
-          title: title,
-          following: []
-        })
-        .then(() => {
-          this.afterSuccessfulLogin();
-        })
-        .catch(err => {
-          console.log(err);
-          this.errorMsg = err.message;
-        });
-    },
-    resetPassword() {
+    async resetPassword() {
       this.performingRequest = true;
-
-      auth
-        .sendPasswordResetEmail(this.passwordForm.email)
-        .then(() => {
-          this.performingRequest = false;
-          this.passwordResetSuccess = true;
-          this.passwordForm.email = "";
-        })
-        .catch(err => {
-          console.log(err);
-          this.showPasswordError = true;
-          this.performingRequest = false;
-          this.errorMsg = err.message;
-        });
+      try {
+        await this.resetUserPassword(this.passwordForm.email);
+        this.performingRequest = false;
+        this.passwordResetSuccess = true;
+        this.passwordForm.email = "";
+      } catch (error) {
+        this.showErrorMessage(error, this.showPasswordError);
+      }
     },
     togglePasswordReset() {
       if (this.showForgotPassword) {

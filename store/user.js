@@ -1,9 +1,10 @@
-// import _ from 'lodash';
 import {
+    auth,
     usersCollection,
     postsCollection,
     commentsCollection
 } from '~/plugins/firebase.js'
+import firebase from 'firebase'
 
 export const state = () => ({
     userProfile: {},
@@ -25,6 +26,38 @@ export const mutations = {
 
 
 export const actions = {
+    async login({ commit, dispatch }, user) {
+        const response = await auth.signInWithEmailAndPassword(user.email, user.password)
+        commit('setCurrentUserId', response.user.uid);
+        await dispatch('fetchUserProfile');
+    },
+    async loginWithGoogle({ dispatch }) {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const response = await auth.signInWithPopup(provider);
+        commit('setCurrentUserId', response.user.uid);
+        await dispatch('checkIfUserExist', response.user)
+    },
+
+    async checkIfUserExist({ dispatch }, user) {
+        const response = await usersCollection.doc(user.uid).get();
+        if (response.exists) {
+            await dispatch('fetchUserProfile');
+        } else {
+            dispatch('addUserToDb', { userId: user.uid, name: user.name, title: "" });
+        }
+    },
+    async addUserToDb({ dispatch }, user) {
+        await usersCollection.doc(user.userId).set({ name: user.name, title: user.title, following: [] })
+        await dispatch('fetchUserProfile');
+    },
+    async signup({ dispatch }, user) {
+        const response = await auth.createUserWithEmailAndPassword(user.email, user.password)
+        commit('setCurrentUserId', response.user.uid);
+        await dispatch('addUserToDb', { userId: response.user.uid, name: user.name, title: user.title })
+    },
+    async  resetPassword({ }, email) {
+        await auth.sendPasswordResetEmail(email);
+    },
     fetchUsersBeside({ commit, state }) {
         usersCollection.get().then(querySnapshot => {
             let fetchedUsers = querySnapshot.docs.map((doc) => {
