@@ -72,11 +72,7 @@ export default {
         this.userProfile.following.push(userId);
       }
 
-      this.updateProfileFollowing({
-        following: this.userProfile.following
-      }).then(() => {
-        this.fetchUserProfile();
-      });
+      this.updateProfileFollowing(this.userProfile.following);
     }
   }
 };

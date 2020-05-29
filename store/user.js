@@ -24,7 +24,6 @@ export const mutations = {
     },
 }
 
-
 export const actions = {
     async login({ commit, dispatch }, user) {
         const response = await auth.signInWithEmailAndPassword(user.email, user.password)
@@ -37,7 +36,6 @@ export const actions = {
         commit('setCurrentUserId', response.user.uid);
         await dispatch('checkIfUserExist', response.user)
     },
-
     async checkIfUserExist({ dispatch }, user) {
         const response = await usersCollection.doc(user.uid).get();
         if (response.exists) {
@@ -58,59 +56,49 @@ export const actions = {
     async  resetPassword({ }, email) {
         await auth.sendPasswordResetEmail(email);
     },
-    fetchUsersBeside({ commit, state }) {
-        usersCollection.get().then(querySnapshot => {
-            let fetchedUsers = querySnapshot.docs.map((doc) => {
-                return { id: doc.id, ...doc.data() }
-            })
-            _.remove(fetchedUsers, function (user) {
-                return user.id === state.currentUserId;
-            });
-            commit('setUsers', fetchedUsers)
-        }).catch(err => {
-            console.log(err)
+    async fetchUsersBeside({ commit, state }) {
+        const response = await usersCollection.get();
+
+        let fetchedUsers = response.docs.map((doc) => {
+            return { id: doc.id, ...doc.data() }
         })
+        _.remove(fetchedUsers, function (user) {
+            return user.id === state.currentUserId;
+        });
+        commit('setUsers', fetchedUsers)
     },
-    fetchUserProfile({ commit, state }) {
-        usersCollection.doc(state.currentUserId).get().then(res => {
-            let user = res.data();
-            user.id = res.id;
-            commit('setUserProfile', user)
-        }).catch(err => {
-            console.log(err)
-        })
+    async fetchUserProfile({ commit, state }) {
+        const response = await usersCollection.doc(state.currentUserId).get();
+        let user = response.data();
+        user.id = response.id;
+        commit('setUserProfile', user)
     },
-    updateProfile({ state }, data) {
+    async updateProfile({ state }, data) {
         let name = data.name
         let title = data.title
         let profileImageUrl = data.profileImageUrl
 
-        usersCollection.doc(state.currentUserId).update({ name, title, profileImageUrl }).then(() => {
-            // update all posts by user to reflect new name
-            postsCollection.where('userId', '==', state.currentUserId).get().then(docs => {
-                docs.forEach(doc => {
-                    postsCollection.doc(doc.id).update({
-                        userName: name,
-                        profileImageUrl: profileImageUrl
-                    })
-                })
+        await usersCollection.doc(state.currentUserId).update({ name, title, profileImageUrl });
+        // update all posts by user to reflect new name
+        const posts = await postsCollection.where('userId', '==', state.currentUserId).get();
+
+        posts.forEach(post => {
+            postsCollection.doc(post.id).update({
+                userName: name,
+                profileImageUrl: profileImageUrl
             })
-            // update all comments by user to reflect new name
-            commentsCollection.where('userId', '==', state.currentUserId).get().then(docs => {
-                docs.forEach(doc => {
-                    commentsCollection.doc(doc.id).update({
-                        userName: name,
-                        profileImageUrl: profileImageUrl
-                    })
-                })
+        })
+        // update all comments by user to reflect new name
+        const comments = await commentsCollection.where('userId', '==', state.currentUserId).get();
+        comments.forEach(comment => {
+            commentsCollection.doc(comment.id).update({
+                userName: name,
+                profileImageUrl: profileImageUrl
             })
-        }).catch(err => {
-            console.log(err)
         })
     },
-    updateProfileFollowing({ state }, data) {
-        let following = data.following
-
-        usersCollection.doc(state.currentUserId).update({ following });
+    async updateProfileFollowing({ state, dispatch }, following) {
+        await usersCollection.doc(state.currentUserId).update({ following });
+        dispatch('fetchUserProfile');
     }
 }
