@@ -4,6 +4,7 @@ import {
     postsCollection,
     commentsCollection
 } from '~/plugins/firebase.js'
+import Cookies from 'js-cookie'
 import firebase from 'firebase'
 
 export const state = () => ({
@@ -28,6 +29,9 @@ export const actions = {
     async login({ commit, dispatch }, user) {
         const response = await auth.signInWithEmailAndPassword(user.email, user.password)
         commit('setCurrentUserId', response.user.uid);
+        const token = await auth.currentUser.getIdToken();
+        Cookies.set('access_token', token); // saving token in cookie for server rendering
+
         await dispatch('fetchUserProfile');
     },
     async loginWithGoogle({ dispatch }) {
