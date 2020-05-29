@@ -1,7 +1,7 @@
 <template>
-  <v-container grid-list-xl text-xs-center>
-    <v-layout class="settings">
-      <v-flex md10 offset-md1>
+  <v-container>
+    <v-row class="settings">
+      <v-col md10>
         <v-alert
           v-model="showSuccess"
           transition="scale-transition"
@@ -94,8 +94,8 @@
             </v-form>
           </ValidationObserver>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

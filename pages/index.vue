@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
-    <v-layout column>
-      <v-flex md12>
-        <v-card height="fix-content" class="mx-auto" elevation="18">
+    <v-row>
+      <v-col md12 sm12>
+        <v-card height="fix-content" elevation="18">
           <v-list-item>
             <v-list-item-avatar>
               <v-img
@@ -37,139 +37,146 @@
               color="primary"
               :disabled="post.content === ''"
               @click="createPost"
-              >{{ $t("dashboard.post") }}</v-btn
             >
-          </v-card-text>
-        </v-card>
-        <v-divider vertical></v-divider>
-      </v-flex>
-      <v-flex v-for="(post, index) in posts" :key="index">
-        <v-card height="fix-content" class="mx-auto" elevation="18">
-          <v-list-item>
-            <v-list-item-avatar>
-              <v-img
-                v-if="post.profileImageUrl"
-                :src="post.profileImageUrl"
-                alt="logoImage"
-              ></v-img>
-              <v-icon v-if="!post.profileImageUrl" large
-                >mdi-account-circle</v-icon
-              >
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title class="headline">{{
-                post.userName
-              }}</v-list-item-title>
-              <v-list-item-subtitle>{{
-                post.createdOn | formatDate
-              }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-card-text>
-            <span
-              :class="{ pointer: post.content.length > 200 }"
-              v-if="!isFullPost || post.id !== fullPostId"
-              @click="showFullPost(post.id)"
-              >{{ post.content | trimLength }}</span
-            >
-            <span
-              :class="{ pointer: post.content.length > 200 }"
-              v-if="isFullPost && post.id === fullPostId"
-              @click="showFullPost(post.id)"
-              >{{ post.content }}</span
-            >
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn text color="primary" @click="showCommentForm(post.id)">{{
-              $t("dashboard.addComment")
-            }}</v-btn>
-            <v-btn text color="primary">
-              <v-btn
-                icon
-                :color="didUserLikedPost(post.usersWhoLiked) ? 'red' : 'grey'"
-                @click="likePost(post)"
-              >
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              {{ post.likes }}
+              {{ $t("dashboard.post") }}
             </v-btn>
-            <v-btn
-              text
-              color="primary"
-              :disabled="post.comments === 0"
-              @click="showAllComments(post)"
-              >{{
-                $t(
-                  post.id === currentCommentId
-                    ? "dashboard.hideComments"
-                    : "dashboard.showComments"
-                )
-              }}({{ post.comments }})</v-btn
-            >
-          </v-card-actions>
-
-          <v-flex md4 offset-md1>
-            <v-progress-circular
-              :size="50"
-              color="primary"
-              indeterminate
-              v-if="post.id === currentCommentId && loadingComents"
-            ></v-progress-circular>
-          </v-flex>
-          <v-flex md12 v-if="post.id === currentCommentId && !loadingComents">
-            <v-card
-              class="comments"
-              shaped
-              height="fix-content"
-              v-for="(comment, index) in postComments"
-              :key="index"
-            >
-              <v-list-item>
-                <v-list-item-avatar>
-                  <v-img
-                    v-if="comment.profileImageUrl"
-                    :src="comment.profileImageUrl"
-                    alt="logoImage"
-                  ></v-img>
-                  <v-icon v-if="!comment.profileImageUrl" large
-                    >mdi-account-circle</v-icon
-                  >
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title class="headline">{{
-                    comment.userName
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
-                    comment.createdOn | formatDate
-                  }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-card-text>{{ comment.content }}</v-card-text>
-            </v-card>
-          </v-flex>
-          <br />
-
-          <v-card-actions v-if="post.id === currentPostId">
-            <v-textarea
-              rows="1"
-              v-model.trim="comment.content"
-              outlined
-              :placeholder="$t('dashboard.addComment')"
-            ></v-textarea>
-            <v-btn
-              @click="addComment(post)"
-              text
-              color="primary"
-              :disabled="comment.content === ''"
-              >{{ $t("dashboard.addComment") }}</v-btn
-            >
-          </v-card-actions>
+          </v-card-text>
         </v-card>
-        <v-divider vertical></v-divider>
-      </v-flex>
-    </v-layout>
+      </v-col>
+      <v-responsive width="100%"></v-responsive>
+      <section v-for="(post, index) in posts" :key="index">
+        <v-col md12 sm12>
+          <v-card height="fix-content" class="mx-auto" elevation="18">
+            <v-list-item>
+              <v-list-item-avatar>
+                <v-img
+                  v-if="post.profileImageUrl"
+                  :src="post.profileImageUrl"
+                  alt="logoImage"
+                ></v-img>
+                <v-icon v-if="!post.profileImageUrl" large
+                  >mdi-account-circle</v-icon
+                >
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title class="headline">{{
+                  post.userName
+                }}</v-list-item-title>
+                <v-list-item-subtitle>{{
+                  post.createdOn | formatDate
+                }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-card-text>
+              <span
+                :class="{ pointer: post.content.length > 200 }"
+                v-if="!isFullPost || post.id !== fullPostId"
+                @click="showFullPost(post.id)"
+                >{{ post.content }}</span
+              >
+              <span
+                :class="{ pointer: post.content.length > 200 }"
+                v-if="isFullPost && post.id === fullPostId"
+                @click="showFullPost(post.id)"
+                >{{ post.content }}</span
+              >
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn text color="primary" @click="showCommentForm(post.id)">
+                {{ $t("dashboard.addComment") }}
+              </v-btn>
+              <v-btn text color="primary">
+                <v-btn
+                  icon
+                  :color="didUserLikedPost(post.usersWhoLiked) ? 'red' : 'grey'"
+                  @click="likePost(post)"
+                >
+                  <v-icon>mdi-heart</v-icon>
+                </v-btn>
+                {{ post.likes }}
+              </v-btn>
+              <v-btn
+                text
+                color="primary"
+                :disabled="post.comments === 0"
+                @click="showAllComments(post)"
+              >
+                {{
+                  $t(
+                    post.id === currentCommentId
+                      ? "dashboard.hideComments"
+                      : "dashboard.showComments"
+                  )
+                }}({{ post.comments }})
+              </v-btn>
+            </v-card-actions>
+
+            <v-flex md4 offset-md1>
+              <v-progress-circular
+                :size="50"
+                color="primary"
+                indeterminate
+                v-if="post.id === currentCommentId && loadingComents"
+              ></v-progress-circular>
+            </v-flex>
+            <v-flex md12 v-if="post.id === currentCommentId && !loadingComents">
+              <v-card
+                class="comments"
+                shaped
+                height="fix-content"
+                v-for="(comment, index) in postComments"
+                :key="index"
+              >
+                <v-list-item>
+                  <v-list-item-avatar>
+                    <v-img
+                      v-if="comment.profileImageUrl"
+                      :src="comment.profileImageUrl"
+                      alt="logoImage"
+                    ></v-img>
+                    <v-icon v-if="!comment.profileImageUrl" large
+                      >mdi-account-circle</v-icon
+                    >
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title class="headline">{{
+                      comment.userName
+                    }}</v-list-item-title>
+                    <v-list-item-subtitle>{{
+                      comment.createdOn | formatDate
+                    }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-card-text>
+                  {{ comment.content }}
+                </v-card-text>
+              </v-card>
+            </v-flex>
+            <br />
+
+            <v-card-actions v-if="post.id === currentPostId">
+              <v-textarea
+                rows="1"
+                v-model.trim="comment.content"
+                outlined
+                :placeholder="$t('dashboard.addComment')"
+              ></v-textarea>
+              <v-btn
+                @click="addComment(post)"
+                text
+                color="primary"
+                :disabled="comment.content === ''"
+              >
+                {{ $t("dashboard.addComment") }}
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+        <v-responsive width="100%"></v-responsive>
+      </section>
+    </v-row>
   </v-container>
 </template>
 

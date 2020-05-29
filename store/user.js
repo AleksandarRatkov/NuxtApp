@@ -29,33 +29,33 @@ export const actions = {
     async login({ commit, dispatch }, user) {
         const response = await auth.signInWithEmailAndPassword(user.email, user.password)
         commit('setCurrentUserId', response.user.uid);
-        const token = await auth.currentUser.getIdToken();
-        Cookies.set('access_token', token); // saving token in cookie for server rendering
-
+        dispatch('setToken');
         await dispatch('fetchUserProfile');
     },
-    async loginWithGoogle({ dispatch }) {
+    async loginWithGoogle({ dispatch, commit }) {
         const provider = new firebase.auth.GoogleAuthProvider();
         const response = await auth.signInWithPopup(provider);
         commit('setCurrentUserId', response.user.uid);
         await dispatch('checkIfUserExist', response.user)
+        dispatch('setToken');
     },
     async checkIfUserExist({ dispatch }, user) {
         const response = await usersCollection.doc(user.uid).get();
         if (response.exists) {
             await dispatch('fetchUserProfile');
         } else {
-            dispatch('addUserToDb', { userId: user.uid, name: user.name, title: "" });
+            await dispatch('addUserToDb', { userId: user.uid, name: user.displayName, title: "", profileImageUrl: user.photoURL })
         }
     },
     async addUserToDb({ dispatch }, user) {
-        await usersCollection.doc(user.userId).set({ name: user.name, title: user.title, following: [] })
+        await usersCollection.doc(user.userId).set({ name: user.name, title: user.title, following: [], profileImageUrl: user.profileImageUrl })
         await dispatch('fetchUserProfile');
     },
-    async signup({ dispatch }, user) {
+    async signup({ dispatch, commit }, user) {
         const response = await auth.createUserWithEmailAndPassword(user.email, user.password)
         commit('setCurrentUserId', response.user.uid);
-        await dispatch('addUserToDb', { userId: response.user.uid, name: user.name, title: user.title })
+        await dispatch('addUserToDb', { userId: response.user.uid, name: user.name, title: user.title, profileImageUrl: "" })
+        dispatch('setToken');
     },
     async  resetPassword({ }, email) {
         await auth.sendPasswordResetEmail(email);
@@ -104,5 +104,9 @@ export const actions = {
     async updateProfileFollowing({ state, dispatch }, following) {
         await usersCollection.doc(state.currentUserId).update({ following });
         dispatch('fetchUserProfile');
+    },
+    async setToken({ }) {
+        const token = await auth.currentUser.getIdToken();
+        Cookies.set('access_token', token); // saving token in cookie for server rendering
     }
 }

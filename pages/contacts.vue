@@ -1,8 +1,14 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col v-for="(user, index) in fetchedUsers" :key="index" cols="4">
-        <v-card class="mx-auto profile" max-width="344">
+    <v-row align="center" justify-md="start" justify-sm="center">
+      <v-col
+        v-for="(user, index) in fetchedUsers"
+        :key="index"
+        md="4"
+        lg="4"
+        sm="1"
+      >
+        <v-card class="mx-auto profile" width="344" height="482px">
           <v-img
             class="image"
             v-if="user.profileImageUrl"
@@ -81,5 +87,10 @@ export default {
 <style lang="scss" scoped>
 .image {
   height: 344px;
+}
+@media (min-width: 600px) {
+  .col-sm-1 {
+    max-width: none;
+  }
 }
 </style>
