@@ -1,52 +1,53 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col md12 sm12>
-        <v-card height="fix-content" elevation="18">
-          <v-list-item>
-            <v-list-item-avatar>
-              <v-img
-                v-if="userProfile.profileImageUrl"
-                :src="userProfile.profileImageUrl"
-                alt="logoImage"
-              ></v-img>
-              <v-icon v-if="!userProfile.profileImageUrl" large
-                >mdi-account-circle</v-icon
-              >
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title class="headline">{{
-                userProfile.name
-              }}</v-list-item-title>
-              <v-list-item-subtitle>{{
-                userProfile.title
-              }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-card-text>
-            <v-textarea
-              rows="3"
-              v-model.trim="post.content"
-              outlined
-              :placeholder="$t('dashboard.onYourMind')"
-            ></v-textarea>
-            <v-btn
-              class="white--text"
-              min-width="100px"
-              color="primary"
-              :disabled="post.content === ''"
-              @click="createPost"
-            >
-              {{ $t("dashboard.post") }}
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-responsive width="100%"></v-responsive>
-      <section v-for="(post, index) in posts" :key="index">
+      <v-responsive width="100%">
         <v-col md12 sm12>
-          <v-card height="fix-content" class="mx-auto" elevation="18">
+          <v-card height="fix-content" elevation="5">
+            <v-list-item>
+              <v-list-item-avatar>
+                <v-img
+                  v-if="userProfile.profileImageUrl"
+                  :src="userProfile.profileImageUrl"
+                  alt="logoImage"
+                ></v-img>
+                <v-icon v-if="!userProfile.profileImageUrl" large
+                  >mdi-account-circle</v-icon
+                >
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title class="headline">{{
+                  userProfile.name
+                }}</v-list-item-title>
+                <v-list-item-subtitle>{{
+                  userProfile.title
+                }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-card-text>
+              <v-textarea
+                rows="3"
+                v-model.trim="post.content"
+                outlined
+                :placeholder="$t('dashboard.onYourMind')"
+              ></v-textarea>
+              <v-btn
+                class="white--text"
+                min-width="100px"
+                color="primary"
+                :disabled="post.content === ''"
+                @click="createPost"
+              >
+                {{ $t("dashboard.post") }}
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-responsive>
+      <v-responsive width="100%" v-for="(post, index) in posts" :key="index">
+        <v-col md12 sm12>
+          <v-card height="fix-content" class="mx-auto" elevation="5">
             <v-list-item>
               <v-list-item-avatar>
                 <v-img
@@ -174,8 +175,7 @@
             </v-card-actions>
           </v-card>
         </v-col>
-        <v-responsive width="100%"></v-responsive>
-      </section>
+      </v-responsive>
     </v-row>
   </v-container>
 </template>
