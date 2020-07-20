@@ -16,7 +16,7 @@
     "is-image-url": "^1.1.8",
     "js-cookie": "^2.2.1",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.25.3",
     "nuxt": "^2.0.0",
     "nuxt-material-design-icons": "^1.0.4",
